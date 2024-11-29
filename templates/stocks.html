@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Summary</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Stock Portfolio Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/CSS/styles.css">
+
+    <!-- Add defer to make sure the scripts are executed after HTML load -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/static/JS/stocks.js"></script>
 </head>
-<body>
-    <div class="container mt-5">
+
+<body class="body">
+    <div class="container">
         <h1 class="text-center">Stock Summary</h1>
         <button id="refresh-btn" class="btn btn-primary mb-3">Refresh</button>
-        <table class="table table-bordered">
+        <table>
             <thead>
                 <tr>
                     <th>Stock</th>
@@ -29,43 +36,9 @@
                 <!-- Rows will be populated here -->
             </tbody>
         </table>
+        <footer>
+            <p>Developed by AKG to track my stock trading | © 2024</p>
+          </footer>
     </div>
-    <script>
-        function fetchStockData() {
-            $.get('/api/stocks', function(data) {
-                const tableBody = $('#stock-table-body');
-                tableBody.empty(); // Clear previous data
-                data.forEach(stock => {
-                    const row = `
-                        <tr>
-                            <td>${stock['Stock']}</td>
-                            <td>${stock['Buy Price']}</td>
-                            <td>${stock['Sell Price']}</td>
-                            <td>${stock['Quantity']}</td>
-                            <td>${stock['Invested Amount']}</td>
-                            <td style="color: ${stock['Profit/Loss'] > 0 ? 'green' : 'red'};">
-                                ${stock['Profit/Loss']}
-                            </td>
-
-                            <td>${stock['Percentage Change']}</td>
-                            <td>${stock['Todays Change']}</td>
-                             <td style="color: ${stock['Todays Change Percent'] > 0 ? 'green' : 'red'};">
-                                ${stock['Todays Change Percent']}
-                            </td>
-                            
-                        </tr>
-                    `;
-                    tableBody.append(row);
-                });
-            }).fail(function(err) {
-                alert('Error fetching stock data: ' + err.responseJSON.error);
-            });
-        }
-
-        $(document).ready(function() {
-            $('#refresh-btn').on('click', fetchStockData);
-            fetchStockData(); // Initial load
-        });
-    </script>
 </body>
 </html>
