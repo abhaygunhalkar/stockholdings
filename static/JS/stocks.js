@@ -13,10 +13,10 @@ function fetchStockData() {
                     <td style="color: ${stock['Profit/Loss'] > 0 ? 'green' : 'red'};">
                         ${stock['Profit/Loss']}
                     </td>
-                    <td>${stock['Percentage Change']}</td>
+                    <td>${stock['Percentage Change']}%</td>
                     <td>${stock['Todays Change']}</td>
                     <td style="color: ${stock['Todays Change Percent'] > 0 ? 'green' : 'red'};">
-                        ${stock['Todays Change Percent']}
+                        ${stock['Todays Change Percent']}%
                     </td>
                 </tr>
             `;
