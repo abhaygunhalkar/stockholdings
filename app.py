@@ -12,21 +12,17 @@ def sanitize_data(data):
                 row[key] = None  # Replace NaN with None (converted to null in JSON)
     return data
 
-
-    # Load stock data and fetch real-time prices
+# Load stock data and fetch real-time prices
 def load_stock_data():
     try:
-        # Read the Excel file
         file_path = 'mystockholdings.xlsx'
         df = pd.read_excel(file_path)
 
-        # Ensure required columns are present
-        required_columns = ['Stock', 'Buy Price', 'Quantity']
+        required_columns = ['Stock', 'Buy Price', 'Quantity', 'Type']
         missing_columns = [col for col in required_columns if col not in df.columns]
         if missing_columns:
             return {"error": f"Missing columns in Excel file: {', '.join(missing_columns)}"}
 
-        # Fetch real-time stock prices and calculate values
         stock_symbols = df['Stock'].tolist()
         real_time_prices = {}
         todays_change = {}
@@ -47,12 +43,6 @@ def load_stock_data():
                 todays_change[symbol] = 0
                 todays_change_percent[symbol] = 0
 
-        # Validate that mappings are dictionaries
-        if not isinstance(todays_change, dict) or not isinstance(todays_change_percent, dict):
-            print('Internal error: Mapping variables are not dictionaries.')
-            return {"error": "Internal error: Mapping variables are not dictionaries."}
-        
-        # Add calculated fields to the DataFrame
         df['Invested Amount'] = df['Buy Price'] * df['Quantity']
         df['Current Price'] = df['Stock'].map(real_time_prices)
         df['Profit/Loss'] = (df['Current Price'] - df['Buy Price']) * df['Quantity']
@@ -60,22 +50,18 @@ def load_stock_data():
         df['Todays Change'] = df['Stock'].map(todays_change)
         df['Todays Change Percent'] = df['Stock'].map(todays_change_percent)
 
-        # Save the updated data back to the Excel file
         df.to_excel(file_path, index=False)
 
-        # Convert to a list of dictionaries for JSON response
         return df.to_dict(orient='records')
-
     except Exception as e:
         return {"error": str(e)}
 
-# API to fetch stock data
 @app.route('/api/stocks')
 def get_stocks():
     try:
         data = load_stock_data()
-        sanitized_data = sanitize_data(data)  # Sanitize for NaN
-        formatted_data = format_data(sanitized_data)  # Format numbers
+        sanitized_data = sanitize_data(data)
+        formatted_data = format_data(sanitized_data)
         return jsonify(formatted_data)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -83,14 +69,35 @@ def get_stocks():
 def format_data(data):
     for row in data:
         for key, value in row.items():
-            if isinstance(value, float):  # Check if the value is a float
-                row[key] = round(value, 2)  # Round to 2 decimal places
+            if isinstance(value, float):
+                row[key] = round(value, 2)
     return data
 
 # Frontend route
 @app.route('/stocks')
 def stock_page():
-    return render_template('stocks.html')
+    data = load_stock_data()
+
+    if isinstance(data, dict) and "error" in data:
+        return f"Error: {data['error']}"
+
+    # Print the raw data for debugging
+    #print("Raw Data:", data)
+
+    # Ensure correct filtering with stripped spaces and case insensitivity
+    stocks = [item for item in data if str(item.get('Type', '')).strip().lower() == 'stock']
+    etfs = [item for item in data if str(item.get('Type', '')).strip().lower() == 'etf']
+
+    # Print the filtered results to debug
+    print("Stocks:", [item['Stock'] for item in stocks])
+    print("ETFs:", [item['Stock'] for item in etfs])
+
+    return render_template('stocks.html', stocks=stocks, etfs=etfs)
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

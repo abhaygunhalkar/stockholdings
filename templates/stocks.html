@@ -16,8 +16,11 @@
 
 <body>
     <div class="container">
-        <h1 style="text-align: center;">Stock Summary</h1>
+        <h1 style="text-align: center;">Stock Portfolio Tracker</h1>
         <button id="refresh-btn" class="btn btn-primary mb-3">Refresh</button>
+
+        <!-- Stock Holdings Table -->
+        <h2>Stock Holdings</h2>
         <table>
             <thead>
                 <tr>
@@ -33,12 +36,58 @@
                 </tr>
             </thead>
             <tbody id="stock-table-body">
-                <!-- Rows will be populated here -->
+                {% for stock in stocks %}
+                <tr>
+                    <td>{{ stock.Stock }}</td>
+                    <td>{{ stock['Buy Price'] }}</td>
+                    <td>{{ stock.Quantity }}</td>
+                    <td>{{ stock['Invested Amount'] }}</td>
+                    <td>{{ stock['Current Price'] }}</td>
+                    <td>{{ stock['Profit/Loss'] }}</td>
+                    <td>{{ stock['Percentage Change'] }}</td>
+                    <td>{{ stock['Todays Change'] }}</td>
+                    <td>{{ stock['Todays Change Percent'] }}</td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
+        <br>
+        <!-- ETF Holdings Table -->
+        <h2>ETF Holdings</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ETF</th>
+                    <th>Buy Price</th>
+                    <th>Quantity</th>
+                    <th>Invested Amount</th>
+                    <th>Current Price</th>
+                    <th>Profit/Loss</th>
+                    <th>Percentage Change</th>
+                    <th>Today's Change</th>
+                    <th>Today's Change Percent</th>
+                </tr>
+            </thead>
+            <tbody id="etf-table-body">
+                {% for etf in etfs %}
+                <tr>
+                    <td>{{ etf.Stock }}</td>
+                    <td>{{ etf['Buy Price'] }}</td>
+                    <td>{{ etf.Quantity }}</td>
+                    <td>{{ etf['Invested Amount'] }}</td>
+                    <td>{{ etf['Current Price'] }}</td>
+                    <td>{{ etf['Profit/Loss'] }}</td>
+                    <td>{{ etf['Percentage Change'] }}</td>
+                    <td>{{ etf['Todays Change'] }}</td>
+                    <td>{{ etf['Todays Change Percent'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
         <footer>
             <p>Developed by AKG to track my stock trading | © 2024</p>
-          </footer>
+        </footer>
     </div>
 </body>
 </html>
