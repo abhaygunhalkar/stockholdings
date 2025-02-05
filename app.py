@@ -88,16 +88,7 @@ def stock_page():
     stocks = [item for item in data if str(item.get('Type', '')).strip().lower() == 'stock']
     etfs = [item for item in data if str(item.get('Type', '')).strip().lower() == 'etf']
 
-    # Print the filtered results to debug
-    print("Stocks:", [item['Stock'] for item in stocks])
-    print("ETFs:", [item['Stock'] for item in etfs])
-
     return render_template('stocks.html', stocks=stocks, etfs=etfs)
-
-
-
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
