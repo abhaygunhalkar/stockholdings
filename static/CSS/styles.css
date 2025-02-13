@@ -1,3 +1,11 @@
+.total-row {
+  background-color: #f5a2f2; /* Light gray background */
+  font-weight: bold;
+  text-align: center;
+  color: #333; /* Darker text for contrast */
+}
+
+
 /* General Reset */
 * {
     margin: 0;
